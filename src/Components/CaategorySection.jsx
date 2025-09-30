@@ -39,7 +39,7 @@ const CategorySection = () => {
         <h1 className="text-2xl font-semibold">Categories</h1>
       </div>
 
-      {/* Horizontal Scroll like Author Section */}
+      
       <div className="flex space-x-6 overflow-x-auto scrollbar-hide">
         {categories.map((cat) => (
           <div 

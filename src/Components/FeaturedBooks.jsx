@@ -46,10 +46,10 @@ const featuredBooks = [
 const FeaturedBooks = () => {
   return (
     <div className="p-8">
-      {/* Heading */}
+      
       <h2 className="text-2xl font-bold mb-6 text-center">📚 Featured Books</h2>
 
-      {/* Swiper Carousel */}
+    
       <Swiper
         modules={[Autoplay, Pagination, Navigation]}
         spaceBetween={20}
@@ -67,14 +67,14 @@ const FeaturedBooks = () => {
         {featuredBooks.map((book) => (
           <SwiperSlide key={book.id}>
             <div className="border rounded-lg shadow-md hover:shadow-lg transition p-4 flex flex-col items-center">
-              {/* Book Image */}
+              
               <img
                 src={book.img}
                 alt={book.title}
                 className="w-32 h-40 object-cover rounded-md"
               />
 
-              {/* Title */}
+              
               <h3
                 className="mt-3 text-sm font-semibold text-center text-gray-700"
                 style={{
@@ -87,13 +87,13 @@ const FeaturedBooks = () => {
                 {book.title}
               </h3>
 
-              {/* Author */}
+              
               <p className="text-xs text-gray-500">{book.author}</p>
 
-              {/* Price */}
+             
               <p className="mt-1 font-bold text-[#AD7D42]">{book.price}</p>
 
-              {/* Button */}
+            
               <button className="mt-2 bg-[#AD7D42] text-white px-3 py-1 text-sm rounded hover:bg-[#8a6232] transition">
                 Add to Cart
               </button>
