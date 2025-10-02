@@ -10,8 +10,61 @@ import { IoIosArrowRoundForward } from "react-icons/io";
 import books from "./booksData.json"
 import { AiOutlineHeart } from "react-icons/ai";
 import { FiShare2 } from "react-icons/fi";
+import axios from 'axios';
+import { useState,useEffect } from 'react';
+import { toast } from "react-toastify";
+
 
 const Recommendation = () => {
+ 
+ 
+  const [booksData, setBooksData] = useState([]);
+
+ const handleAddToCart = async (book) => {
+
+  console.log("the add to cart btn is clicked")
+  try {
+    const requestBody = {
+      book_id: book.id,         
+      items: 1,                  
+      discountPercent: 0        
+    };
+   const token = localStorage.getItem("token")
+    const response = await axios.post(
+      "http://localhost:8080/cart/add",
+      requestBody,
+      
+      {
+        headers: {
+          "Content-Type": "application/json",
+          // If backend needs JWT:
+          Authorization : `Bearer ${token}`
+        }
+      }
+    );
+
+    console.log("Added to cart:", response.data);
+    toast.success("added to cart successfully")
+  } catch (error) {
+    console.error("Error adding to cart:", error);
+    toast.error("try again !")
+  }
+};
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/book/list");
+        
+        setBooksData(response.data); 
+        
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchBooks();
+  }, []);
+
+  
   return (
   <div className="recommendation-section p-8">
 
@@ -40,14 +93,14 @@ const Recommendation = () => {
         }}
         className="w-full"
       >
-        {books.map((book) => {
+        {booksData.map((book) => {
           
           return (
             <SwiperSlide key={book.id}>
               <div className="border-2 w-60 h-auto mx-auto rounded-xl shadow-md p-3 flex flex-col items-center flex-shrink-0 mt-2">
                
                 <img
-                  src={book.image}
+                  src={book.imageUrl}
                   alt={book.title}
                   className="w-full h-56 object-cover rounded-md "
                   loading='lazy'
@@ -55,6 +108,7 @@ const Recommendation = () => {
                 <h2 className="mt-2 text-center text-xl font-medium text-gray-700 line-clamp-1">
                   {book.title}
                 </h2>
+                <h3> ₹ {book.price}</h3>
 
                 <div className="absolute top-2 right-2 flex flex-col gap-2">
  
@@ -75,6 +129,7 @@ const Recommendation = () => {
                  <button
           className="bg-[#AD7D42] mt-4 h-10 w-40 text-white rounded-2xl 
                      hover:bg-[#8c6333] hover:scale-105 transition-all duration-300 shadow-md"
+                     onClick={()=>handleAddToCart(book)}
         >
           Add to cart
         </button>

@@ -10,6 +10,8 @@ import LoginPage from './Pages/LoginPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PrivateRoute from './Pages/PrivateRoute';
+import CartPage from './Pages/Cartpage';
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -38,6 +40,9 @@ function App() {
         </PrivateRoute>}/>
         <Route path='/signup' element= {<SignUpPage/>}/>
         <Route path='/login' element= {<LoginPage/>}/>
+        <Route path='/cart' element= {<CartPage/>}/>
+       
+
        </Routes>
       </Router>
       

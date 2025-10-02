@@ -3,39 +3,39 @@ import img from "../Components/assets/sign.gif";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { toast } from "react-toastify";
+import {jwtDecode} from "jwt-decode";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [email,setemail] = useState("")
   const [password,setpassword] = useState("")
-  const handleSubmit = async(e)=>{
-    e.preventDefault();
+ const handleSubmit = async(e)=>{
+  e.preventDefault();
 
-    const cleanedData ={
-      email: email.trim(),
-      password: password.trim()
+  const cleanedData ={
+    email: email.trim(),
+    password: password.trim()
+  }
 
-    }
-    try{
-         const response = await axios.post("http://localhost:8080/api/v1/auth/login",cleanedData)
-         console.log("the data is submitted" ,response)
-         const token = response.data.token
-         localStorage.setItem("token", token); 
-         toast.success("login successfull")
-         navigate("/Home")
-    }
+  try{
+    const response = await axios.post("http://localhost:8080/api/v1/auth/login", cleanedData)
+    const token = response.data.token;
 
-    catch(err){
-      
-       toast.error("invalid credentials")
-    }
-    
-
-    const token = localStorage.getItem("token")
     if(token){
-      const decoded = jwtDecode(token)
-      console.log("the decoded data is", decoded)
+      localStorage.setItem("token", token); 
+      window.dispatchEvent(new Event("login")); 
+      const decoded = jwtDecode(token);
+      console.log("Decoded JWT:", decoded);
+      toast.success("Login successful");
+      navigate("/Home");
+    } else {
+      toast.error("Invalid credentials");
     }
+
+  } catch(err){
+    console.log(err);
+    toast.error("Invalid credentials");
+  }
 
 
 
