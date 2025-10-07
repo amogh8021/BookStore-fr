@@ -19,6 +19,32 @@ const Recommendation = () => {
  
  
   const [booksData, setBooksData] = useState([]);
+  const [wishlist,setwishlist] = useState([])
+
+  const handleWishlist = async (book) => {
+  try {
+    const bookId = book.id;
+    const token = localStorage.getItem("token");
+
+    const response = await axios.post(
+      `http://localhost:8080/api/wishlist/add?bookId=${bookId}`,
+      {}, // ✅ empty body
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // ✅ add token
+        },
+      }
+    );
+
+    console.log("Wishlist response:", response.data);
+    toast.success("Added to wishlist");
+  } catch (err) {
+    console.error("Unable to add into the wishlist:", err.response || err.message);
+    toast.error("Unable to add to wishlist");
+  }
+};
+
 
  const handleAddToCart = async (book) => {
 
@@ -115,7 +141,8 @@ const Recommendation = () => {
   <button
     className="bg-white p-2 rounded-full shadow-md transition-all duration-300 ease-in-out transform hover:scale-135 hover:bg-pink-500"
   >
-    <AiOutlineHeart className="w-5 h-5 text-red-500 group-hover:text-white transition-colors duration-300" />
+    <AiOutlineHeart className="w-5 h-5 text-red-500 group-hover:text-white transition-colors duration-300" 
+    onClick={()=>handleWishlist(book)}/>
   </button>
 
  

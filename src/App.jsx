@@ -11,6 +11,9 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PrivateRoute from './Pages/PrivateRoute';
 import CartPage from './Pages/Cartpage';
+import Wishlist from './Pages/Wishlist';
+import WishlistCard from './Components/WishlistCard';
+import ShopPage from './Pages/ShopPage';
 
 
 function App() {
@@ -41,8 +44,10 @@ function App() {
         <Route path='/signup' element= {<SignUpPage/>}/>
         <Route path='/login' element= {<LoginPage/>}/>
         <Route path='/cart' element= {<CartPage/>}/>
-       
-
+        <Route path='/wishlist' element= {<Wishlist/>}/>
+        <Route path='/wishlistcard' element= {<WishlistCard/>}/>
+        <Route path='/shop' element= {<ShopPage/>}/>
+      
        </Routes>
       </Router>
       
