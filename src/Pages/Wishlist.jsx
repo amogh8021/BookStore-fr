@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // import navigation hook
 import axios from 'axios';
 import WishlistCard from '../Components/WishlistCard';
+import NavBar from '../Components/NavBar';
 
 const Wishlist = () => {
   const [data, setData] = useState([]);
-  const navigate = useNavigate(); // hook to navigate
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchWishlist = async () => {
@@ -31,10 +32,14 @@ const Wishlist = () => {
   };
 
   const handleExplore = () => {
-    navigate('/books'); // redirect to book listing page
+    navigate('/shop'); 
   };
 
   return (
+    <>
+   
+      <NavBar />
+   
     <div className='p-6 md:p-12 bg-gray-100 min-h-screen'>
       {/* Heading */}
       <h1 className='text-3xl md:text-4xl font-bold text-gray-800 mb-6'>My Wishlist</h1>
@@ -53,11 +58,14 @@ const Wishlist = () => {
       ) : (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {data.map((book) => (
-            <WishlistCard key={book.id} book={book} remove={handleRemove} />
+            <WishlistCard key={book.id} book={book} remove={handleRemove} 
+            />
+
           ))}
         </div>
       )}
     </div>
+     </>
   );
 };
 

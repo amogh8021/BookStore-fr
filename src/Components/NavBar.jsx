@@ -63,7 +63,7 @@ const NavBar = () => {
         <div className="ham-menu z-10 bg-[#FAF8F4] absolute top-16 left-0 w-full flex flex-col items-center gap-4 py-4 shadow-md transition-all duration-300 md:hidden">
           <Link to="/" className="hover:text-[#AD7D42] transition duration-300 text-gray-600">Home</Link>
           <Link to="/shop" className="hover:text-[#AD7D42] transition duration-300 text-gray-600">Shop</Link>
-          <Link to="/ebook" className="hover:text-[#AD7D42] transition duration-300 text-gray-600">E-book</Link>
+         
           <Link to="/about" className="hover:text-[#AD7D42] transition duration-300 text-gray-600">About</Link>
           <Link to="/wishlist" className="hover:text-[#AD7D42] transition duration-300 text-gray-600">Wishlist</Link>
           <Link to="/cart" className="hover:text-[#AD7D42] transition duration-300 text-gray-600">My Cart</Link>
@@ -84,16 +84,13 @@ const NavBar = () => {
         <div className="hidden md:flex justify-center items-center gap-10">
           <Link to="/" className="hover:text-[#AD7D42] transition duration-300 text-gray-600">Home</Link>
           <Link to="/shop" className="hover:text-[#AD7D42] transition duration-300 text-gray-600">Shop</Link>
-          <Link to="/ebook" className="hover:text-[#AD7D42] transition duration-300 text-gray-600">E-book</Link>
+         
           <Link to="/about" className="hover:text-[#AD7D42] transition duration-300 text-gray-600">About</Link>
           <Link to="/wishlist" className="hover:text-[#AD7D42] transition duration-300 text-gray-600">Wishlist</Link>
           <Link to="/cart" className="hover:text-[#AD7D42] transition duration-300 text-gray-600">My Cart</Link>
         </div>
 
-        {/* Right side */}
-        <div className="flex items-center gap-6">
-          <CiSearch className="cursor-pointer text-xl" />
-          <CiShoppingCart className="cursor-pointer text-xl" />
+       
 
           {/* User icon / avatar + dropdown */}
           <div className="relative" ref={dropdownRef}>
@@ -112,9 +109,9 @@ const NavBar = () => {
                 {userInitial ? (
                   <>
                     <Link to="/profile" className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded">My Profile</Link>
-                    <Link to="/orders" className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded">My Orders</Link>
+                    <Link to="/cart" className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded">My Orders</Link>
                     <Link to="/wishlist" className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded">Wishlist</Link>
-                    <Link to="/settings" className="w-full text-left px-2 py-1 hover:bg-gray-100 rounded">Settings</Link>
+                   
                     <button onClick={handleLogout} className="w-full text-left px-2 py-1 text-red-600 hover:bg-gray-100 rounded">Logout</button>
                   </>
                 ) : (
@@ -127,7 +124,7 @@ const NavBar = () => {
             )}
           </div>
         </div>
-      </div>
+     
     </>
   );
 };

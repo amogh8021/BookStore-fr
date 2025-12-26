@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from "react-toastify";
+import NavBar from './NavBar';
 
 const WishlistCard = ({ book, remove }) => {
   const [loading, setLoading] = useState(false);
@@ -27,7 +28,35 @@ const WishlistCard = ({ book, remove }) => {
     }
   };
 
+  const handleAddToCart = async (bookId) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await axios.post(
+        "http://localhost:8080/cart/add",
+        {
+          book_id: bookId,
+          items: 1,
+          
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success("Added to cart successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Try again!");
+    }
+  };
+ 
+
+
   return (
+  
     <div className='bg-white shadow-md rounded-2xl overflow-hidden flex flex-col md:flex-row gap-4 md:gap-6 p-4 hover:shadow-xl transition-shadow duration-300'>
       <div className="img flex-shrink-0">
         <img 
@@ -44,15 +73,29 @@ const WishlistCard = ({ book, remove }) => {
           <p className='text-gray-600 mt-2 line-clamp-3'>{book.description}</p>
         </div>
 
-        <button 
-          onClick={() => handleClick(book.id)} // ✅ use arrow function
+
+        <div className="flex align-center justify-between">
+     <button 
+          onClick={() => handleClick(book.id)}
           disabled={loading}
           className='mt-3 self-start bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition-colors duration-200'
         >
           {loading ? "Removing..." : "Remove"}
         </button>
+        <button
+        onClick={()=>handleAddToCart(book.id)}
+         className='mt-3 self-start bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-800 transition-colors duration-200'
+        >
+       AddToCart
+        </button> 
+
+        </div>
+
+        
       </div>
     </div>
+    
+    
   );
 };
 

@@ -1,74 +1,85 @@
-import React, { useState } from 'react'
-import img from "../Components/assets/sign.gif"
+import React, { useState } from 'react';
+import img from "../Components/assets/sign.gif";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
-  const[name,setname] = useState("")
-  const[email,setemail] = useState("")
-  const[password,setpassword] = useState("")
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   
+  // OTP states
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
 
-  const handleSubmit = async(e)=>{
-   
+  // Send OTP
+  const handleSendOtp = async () => {
+    if(email.trim().length === 0){
+      toast.error("Please enter email first");
+      return;
+    }
+    try{
+      await axios.post(`http://localhost:8080/api/v1/auth/send-otp?email=${email.trim()}`);
+      toast.success("OTP sent successfully");
+      setOtpSent(true);
+    } catch(error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Failed to send OTP");
+    }
+  }
+
+  // Verify OTP
+  const handleVerifyOtp = async () => {
+    if(otp.trim().length === 0){
+      toast.error("Please enter OTP");
+      return;
+    }
+    try{
+      await axios.post(`http://localhost:8080/api/v1/auth/verify-otp?email=${email.trim()}&otp=${otp.trim()}`);
+      toast.success("Email verified successfully");
+      setIsVerified(true);
+    } catch(error){
+      console.error(error);
+      toast.error(error.response?.data?.message || "Invalid OTP");
+    }
+  }
+
+  // Signup
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    //all field are required
-
-     if (name.length == 0 || email.length == 0 || password.length == 0) {
+    if(name.trim().length===0 || email.trim().length===0 || password.trim().length===0){
       toast.error("All fields are required");
       return;
     }
-
-    //password must be of 8 digit
-
     if(password.length<8){
-      toast.error("password should be of minimum 8 digit")
+      toast.error("Password should be minimum 8 characters");
+      return;
     }
-
-
+    if(!isVerified){
+      toast.error("Please verify your email first");
+      return;
+    }
     try{
-
-   
-    const cleanedData = {
-      name : name.trim(),
-      email: email.trim(),
-      password : password.trim()
+      const response = await axios.post("http://localhost:8080/api/v1/auth/register", {
+        name: name.trim(),
+        email: email.trim(),
+        password: password.trim()
+      });
+      toast.success("Signup successful");
+      setTimeout(()=> navigate("/login"), 1500);
+    } catch(error){
+      console.error(error);
+      toast.error(error.response?.data?.message || "Signup failed");
     }
-
-
-    const response = await axios.post("http://localhost:8080/api/v1/auth/register",cleanedData)
-
-    console.log(response ,"the data is submitted")
-    toast.success("signupSuccessful")
-
-   setTimeout(() => {
-        navigate("/login");
-      }, 1500); 
-    }
-    catch (error) {
-      if ( error.response.status === 409) {
-        toast.error(error.response.data.message || "Email already exists");
-      } else {
-        console.error("Signup error:", error);
-        toast.error("Something went wrong. Please try again.");
-      }
-    
-  };
-
-
-    
-
-  
-
-
   }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#FAF8F4] p-8">
+      <ToastContainer />
       <div className="flex w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden bg-white/30 backdrop-blur-lg border border-white/20  ">
         
         {/* Left Content */}
@@ -84,21 +95,50 @@ const SignUpPage = () => {
                 value={name}
                 placeholder="Enter your full name" 
                 className="mt-1 px-4 py-2 border border-gray-300 rounded-lg bg-white/50 focus:ring-2 focus:ring-gray-400 outline-none transition"
-               onChange={(e)=>setname(e.target.value)}
+                onChange={(e)=>setName(e.target.value)}
               />
             </div>
 
             {/* Email */}
             <div className="flex flex-col">
               <label className="text-sm font-semibold text-gray-600">Email</label>
-              <input 
-                type="email" 
-                value={email}
-                placeholder="Enter your email" 
-                onChange={(e)=>setemail(e.target.value)}
-                className="mt-1 px-4 py-2 border border-gray-300 rounded-lg bg-white/50 focus:ring-2 focus:ring-gray-400 outline-none transition"
-              />
+              <div className="flex gap-2">
+                <input 
+                  type="email" 
+                  value={email}
+                  placeholder="Enter your email" 
+                  onChange={(e)=>setEmail(e.target.value)}
+                  className="mt-1 px-4 py-2 border border-gray-300 rounded-lg bg-white/50 focus:ring-2 focus:ring-gray-400 outline-none transition flex-1"
+                />
+                <button type="button" 
+                  onClick={handleSendOtp} 
+                  className="mt-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                  Send OTP
+                </button>
+              </div>
             </div>
+
+            {/* OTP Input (conditionally shown) */}
+            {otpSent && !isVerified && (
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold text-gray-600">Enter OTP</label>
+                <div className="flex gap-2">
+                  <input 
+                    type="text"
+                    value={otp}
+                    placeholder="Enter OTP"
+                    onChange={(e)=>setOtp(e.target.value)}
+                    className="mt-1 px-4 py-2 border border-gray-300 rounded-lg bg-white/50 focus:ring-2 focus:ring-gray-400 outline-none transition flex-1"
+                  />
+                  <button type="button"
+                    onClick={handleVerifyOtp}
+                    className="mt-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                  >
+                    Verify OTP
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Password */}
             <div className="flex flex-col">
@@ -107,7 +147,7 @@ const SignUpPage = () => {
                 type="password" 
                 value={password}
                 placeholder="Enter your password" 
-                onChange={(e)=>setpassword(e.target.value)}
+                onChange={(e)=>setPassword(e.target.value)}
                 className="mt-1 px-4 py-2 border border-gray-300 rounded-lg bg-white/50 focus:ring-2 focus:ring-gray-400 outline-none transition"
               />
             </div>
@@ -122,33 +162,20 @@ const SignUpPage = () => {
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="flex items-center gap-2 my-4">
-            <hr className="flex-1 border-gray-300" />
-            <span className="text-sm text-gray-500">or continue with</span>
-            <hr className="flex-1 border-gray-300" />
-          </div>
-
-          {/* Social Buttons */}
-          <div className="flex gap-4">
-            <button className="flex-1 bg-black/80 text-white py-2 rounded-lg font-semibold hover:bg-black transition duration-300 shadow-md">
-              Apple
-            </button>
-            <button className="flex-1 bg-gray-200/70 text-gray-800 py-2 rounded-lg font-semibold hover:bg-gray-300 transition duration-300 shadow-md">
-              Google
-            </button>
-          </div>
-
-           {/* Redirect to login */}
-          <div className="last flex gap-2 mt-4 justify-center text-sm">
+           <div className="flex gap-2 mt-4 justify-center text-sm">
             <p className="text-gray-600">Already have an account?</p>
-            <button className="text-indigo-600 font-semibold hover:underline"
-            onClick={()=>navigate("/login")}>
+            <button
+              onClick={() => navigate("/login")}
+              className="text-indigo-600 font-semibold hover:underline"
+            >
               login
             </button>
           </div>
         </div>
-        {/* Right Image (Hidden on Mobile) */}
+
+       
+
+        {/* Right Image */}
         <div className="hidden md:flex flex-[1.3] items-center justify-center bg-gradient-to-br from-white/40 to-white/20 backdrop-blur-md mr-5 ] ">
           <img 
             src={img} 
@@ -161,4 +188,4 @@ const SignUpPage = () => {
   )
 }
 
-export default SignUpPage
+export default SignUpPage;

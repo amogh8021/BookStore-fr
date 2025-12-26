@@ -1,66 +1,90 @@
 import React, { useState } from "react";
 import img from "../Components/assets/sign.gif";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [email,setemail] = useState("")
-  const [password,setpassword] = useState("")
- const handleSubmit = async(e)=>{
-  e.preventDefault();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+ 
 
-  const cleanedData ={
-    email: email.trim(),
-    password: password.trim()
-  }
 
-  try{
-    const response = await axios.post("http://localhost:8080/api/v1/auth/login", cleanedData)
-    const token = response.data.token;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    if(token){
-      localStorage.setItem("token", token); 
-      window.dispatchEvent(new Event("login")); 
-      const decoded = jwtDecode(token);
-      console.log("Decoded JWT:", decoded);
-      toast.success("Login successful");
-      navigate("/Home");
-    } else {
-      toast.error("Invalid credentials");
+    const cleanedData = {
+      email: email.trim(),
+      password: password.trim(),
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/auth/login",
+        cleanedData
+      );
+
+      const token = response.data.token;
+
+      if (token) {
+        localStorage.setItem("token", token);
+        window.dispatchEvent(new Event("login"));
+
+        const decoded = jwtDecode(token);
+        console.log("Decoded JWT:", decoded);
+
+        toast.success("Login successful");
+
+        if(decoded.roles == "ROLE_USER"){
+           navigate("/Home");
+        }
+        else{
+          navigate("/admin")
+        }
+
+       
+
+       
+      } else {
+        toast.error("Invalid credentials");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error(err.response?.data?.message || "Invalid credentials");
     }
+  };
 
-  } catch(err){
-    console.log(err);
-    toast.error("Invalid credentials");
-  }
-
-
-
-  }
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#FAF8F4] p-8">
       <div className="flex w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden bg-white/30 backdrop-blur-lg border border-white/20">
-        
+
         {/* Left Content */}
         <div className="flex flex-col flex-1 p-10 gap-6 justify-center">
           <h1 className="text-3xl font-bold text-gray-800">Welcome Back 👋</h1>
           <p className="text-gray-600 text-sm">Login to continue to your account</p>
 
           <form className="flex flex-col gap-4">
+
             {/* Email */}
             <div className="flex flex-col">
               <label className="text-sm font-semibold text-gray-600">Email</label>
               <input
                 type="email"
-                value = {email}
+                value={email}
                 placeholder="Enter your email"
-                onChange={(e)=>setemail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 className="mt-1 px-4 py-2 border border-gray-300 rounded-lg bg-white/50 focus:ring-2 focus:ring-gray-400 outline-none transition"
               />
             </div>
+
+
+            {
+
+            }
+
+
 
             {/* Password */}
             <div className="flex flex-col">
@@ -68,12 +92,13 @@ const LoginPage = () => {
               <input
                 type="password"
                 value={password}
-                onChange={(e)=>setpassword(e.target.value)}
                 placeholder="Enter your password"
+                onChange={(e) => setPassword(e.target.value)}
                 className="mt-1 px-4 py-2 border border-gray-300 rounded-lg bg-white/50 focus:ring-2 focus:ring-gray-400 outline-none transition"
               />
               <div className="flex justify-end mt-1">
-                <button className="text-sm text-indigo-600 hover:underline">
+                <button
+                onClick={()=>navigate("/forgot-password")} className="text-sm text-indigo-600 hover:underline">
                   Forgot Password?
                 </button>
               </div>
@@ -89,14 +114,14 @@ const LoginPage = () => {
             </button>
           </form>
 
-          {/* Divider */}
+          {/* Divider
           <div className="flex items-center gap-2 my-4">
             <hr className="flex-1 border-gray-300" />
             <span className="text-sm text-gray-500">or continue with</span>
             <hr className="flex-1 border-gray-300" />
-          </div>
+          </div> */}
 
-          {/* Social Buttons */}
+          {/* Social Buttons
           <div className="flex gap-4">
             <button className="flex-1 bg-black/80 text-white py-2 rounded-lg font-semibold hover:bg-black transition duration-300 shadow-md">
               Apple
@@ -107,17 +132,18 @@ const LoginPage = () => {
           </div>
 
           {/* Redirect to SignUp */}
-          <div className="last flex gap-2 mt-4 justify-center text-sm">
+          <div className="flex gap-2 mt-4 justify-center text-sm">
             <p className="text-gray-600">Don't have an account?</p>
             <button
-             onClick={()=>navigate("/signup")}
-             className="text-indigo-600 font-semibold hover:underline">
+              onClick={() => navigate("/signup")}
+              className="text-indigo-600 font-semibold hover:underline"
+            >
               Sign Up
             </button>
           </div>
-        </div>
+        </div> 
 
-        {/* Right Image (Hidden on Mobile) */}
+        {/* Right Image */}
         <div className="hidden md:flex flex-[1.3] items-center justify-center bg-gradient-to-br from-white/40 to-white/20 backdrop-blur-md mr-5">
           <img
             src={img}

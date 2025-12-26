@@ -14,6 +14,21 @@ import CartPage from './Pages/Cartpage';
 import Wishlist from './Pages/Wishlist';
 import WishlistCard from './Components/WishlistCard';
 import ShopPage from './Pages/ShopPage';
+import Admin from './Pages/Admin';
+import AdminNavBar from './Pages/AdminNavbar';
+import TotalOrders from './Pages/TotalOrders';
+import NewOrders from './Pages/NewOrders';
+import PendingOrders from './Pages/PendingOrders';
+import { CanceledError } from 'axios';
+import CompletedOrders from './Pages/CompletedOrders';
+import CancelledOrders from './Pages/CancelledOrders';
+import ListedBooks from './Pages/ListedBooks';
+import Categories from './Pages/Categories';
+import UsersList from './Pages/UsersList';
+import ForgotPassword from './Components/ForgotPassword';
+import ListedAuthor from './Pages/ListedAuthor';
+import ProfilePage from './Pages/ProfilePage';
+import AboutPage from './Pages/AboutPage';
 
 
 function App() {
@@ -47,6 +62,21 @@ function App() {
         <Route path='/wishlist' element= {<Wishlist/>}/>
         <Route path='/wishlistcard' element= {<WishlistCard/>}/>
         <Route path='/shop' element= {<ShopPage/>}/>
+        <Route path='/admin' element= {<Admin/>}/>
+        <Route path='/nav' element= {<AdminNavBar/>}/>
+        <Route path="/admin/orders/total" element= {<TotalOrders/>}/>
+        <Route path="/admin/orders/new" element= {<NewOrders/>}/>
+        <Route path="/admin/orders/pending" element= {<PendingOrders/>}/>
+        <Route path="/admin/orders/cancelled" element= {<CancelledOrders/>}/>
+        <Route path="/admin/orders/completed" element= {<CompletedOrders/>}/>
+        <Route path="/admin/books" element= {<ListedBooks/>}/>
+        <Route path="/admin/categories" element= {<Categories/>}/>
+        <Route path="/admin/users" element= {<UsersList/>}/>
+        <Route path="/forgot-password" element= {<ForgotPassword/>}/>
+        <Route path="/admin/authors" element= {<ListedAuthor/>}/>
+        <Route path="/profile" element= {<ProfilePage/>}/>
+        <Route path="/about" element= {<AboutPage/>}/>
+
       
        </Routes>
       </Router>
