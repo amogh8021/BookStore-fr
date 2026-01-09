@@ -34,6 +34,8 @@ const UserDashboard = () => {
     setOpen(false);
   };
 
+  
+
   return (
     <div className="min-h-screen bg-gray-50 px-6 py-10">
 
@@ -64,7 +66,7 @@ const UserDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-        <Card title="My Orders" icon={<Package />} onClick={() => navigate("/cart")} />
+        <Card title="My Orders" icon={<Package />} onClick={() => navigate("/my-orders")} />
         <Card title="Wishlist" icon={<Heart />} onClick={() => navigate("/wishlist")} />
         <Card title="Cart" icon={<ShoppingBag />} onClick={() => navigate("/cart")} />
       </div>

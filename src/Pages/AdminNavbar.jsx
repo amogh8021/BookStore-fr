@@ -90,15 +90,15 @@ const AdminNavBar = ({ searchValue, setSearchValue }) => {
             {/* WEBSITE MANAGEMENT */}
             <div className="mb-6">
               <p className="text-gray-400 text-sm font-semibold mb-2">
-                WEBSITE MANAGEMENT
+                OFFERS SECTION
               </p>
 
               <div
                 className="flex items-center gap-3 p-2 hover:bg-purple-50 rounded-lg cursor-pointer"
-                onClick={() => navigate("/admin/about")}
+                onClick={() => navigate("/admin/offers")}
               >
                 <FaTachometerAlt className="text-xl text-purple-700" />
-                <span className="text-gray-700 font-medium">About Us</span>
+                <span className="text-gray-700 font-medium">offers</span>
               </div>
 
               <div

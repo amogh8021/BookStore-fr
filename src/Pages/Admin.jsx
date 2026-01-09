@@ -22,7 +22,36 @@ const Admin = () => {
   const [authorsCount, setAuthorsCount] = useState(0);
   const [usersCount, setUsersCount] = useState(0);
 
+  // ================= MODAL =================
   const [modal, setModal] = useState(false);
+  const [book, setBook] = useState({
+    title: "",
+    author: "",
+    genre: "",
+    price: "",
+    quantity: "",
+    imageUrl: "",
+    description: ""
+  });
+
+  const handleChange = (e) => {
+    setBook({ ...book, [e.target.name]: e.target.value });
+  };
+
+  const handleAddBook = async () => {
+    try {
+      await axios.post(
+        "http://localhost:8080/book/create-book",
+        book,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Book added successfully");
+      setModal(false);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to add book");
+    }
+  };
 
   // ================= FETCH DASHBOARD DATA =================
   useEffect(() => {
@@ -61,24 +90,38 @@ const Admin = () => {
         );
         setCancelledOrdersCount(cancelled.data.totalElements);
 
+        // ===== BOOKS =====
         const booksRes = await axios.get(
-  "http://localhost:8080/book/list?page=0&size=1"
-);
-
-setBooksCount(booksRes.data.totalElements);
-
+          "http://localhost:8080/book/list?page=0&size=1",
+          { headers }
+        );
+        setBooksCount(booksRes.data.totalElements);
 
         // ===== CATEGORIES =====
-        const categoriesRes = await axios.get(
-          "http://localhost:8080/book/genres"
-        );
-        setCategoriesCount(categoriesRes.data.length);
+        try {
+          const categoriesRes = await axios.get(
+            "http://localhost:8080/book/genres",
+            { headers }
+          );
+          setCategoriesCount(
+            Array.isArray(categoriesRes.data) ? categoriesRes.data.length : 0
+          );
+        } catch (e) {
+          console.error("Category fetch error:", e);
+        }
 
         // ===== AUTHORS =====
-        const authorsRes = await axios.get(
-          "http://localhost:8080/book/authors"
-        );
-        setAuthorsCount(authorsRes.data.length);
+        try {
+          const authorsRes = await axios.get(
+            "http://localhost:8080/book/authors",
+            { headers }
+          );
+          setAuthorsCount(
+            Array.isArray(authorsRes.data) ? authorsRes.data.length : 0
+          );
+        } catch (e) {
+          console.error("Author fetch error:", e);
+        }
 
         // ===== USERS =====
         const usersRes = await axios.get(
@@ -86,7 +129,6 @@ setBooksCount(booksRes.data.totalElements);
           { headers }
         );
         setUsersCount(usersRes.data.totalElements);
-
       } catch (error) {
         console.error(error);
         toast.error("Failed to load dashboard data");
@@ -108,8 +150,8 @@ setBooksCount(booksRes.data.totalElements);
         <AdDashCard title="Cancelled Orders" no={cancelledOrdersCount} btn="View Details" onClick={() => navigate("/admin/orders/cancelled")} />
         <AdDashCard title="Completed Orders" no={completedOrdersCount} btn="View Details" onClick={() => navigate("/admin/orders/completed")} />
         <AdDashCard title="Listed Books" no={booksCount} btn="View Details" onClick={() => navigate("/admin/books")} />
-        <AdDashCard title="Listed Categories" no={categoriesCount} btn="View Details" onClick={() => navigate("/admin/categories")} />
-        <AdDashCard title="Listed Authors" no={authorsCount} btn="View Details" onClick={() => navigate("/admin/authors")} />
+        <AdDashCard title="Listed Categories" no={categoriesCount} btn="View Details" onClick={()=>navigate("/admin/genres")}/>
+        <AdDashCard title="Listed Authors" no={authorsCount} btn="View Details" onClick={()=>navigate("/admin/authors")} />
         <AdDashCard title="Registered Users" no={usersCount} btn="View Details" onClick={() => navigate("/admin/users")} />
       </div>
 
@@ -120,6 +162,34 @@ setBooksCount(booksRes.data.totalElements);
       >
         <FaCirclePlus size={60} />
       </button>
+
+      {/* ================= MODAL ================= */}
+      {modal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white w-[90%] md:w-[500px] rounded-2xl p-6 shadow-xl">
+            <h2 className="text-xl font-bold mb-4">Add New Book</h2>
+
+            <div className="space-y-3">
+              <input name="title" placeholder="Title" onChange={handleChange} className="w-full border p-2 rounded" />
+              <input name="author" placeholder="Author" onChange={handleChange} className="w-full border p-2 rounded" />
+              <input name="genre" placeholder="Genre" onChange={handleChange} className="w-full border p-2 rounded" />
+              <input name="price" placeholder="Price" onChange={handleChange} className="w-full border p-2 rounded" />
+              <input name="quantity" placeholder="Quantity" onChange={handleChange} className="w-full border p-2 rounded" />
+              <input name="imageUrl" placeholder="Image URL" onChange={handleChange} className="w-full border p-2 rounded" />
+              <textarea name="description" placeholder="Description" onChange={handleChange} className="w-full border p-2 rounded" />
+            </div>
+
+            <div className="flex justify-end gap-3 mt-5">
+              <button onClick={() => setModal(false)} className="px-4 py-2 bg-gray-300 rounded">
+                Cancel
+              </button>
+              <button onClick={handleAddBook} className="px-4 py-2 bg-blue-600 text-white rounded">
+                Add Book
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

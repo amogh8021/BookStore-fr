@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import AdminNavBar from "./AdminNavbar";
 import axios from "axios";
+import { toast } from "react-toastify";
 
-const Authors = () => {
+const ListedAuthors = () => {
   const [authors, setAuthors] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -10,17 +11,23 @@ const Authors = () => {
     const fetchAuthors = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          "http://localhost:8080/book/authors",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        console.log(response.data); 
-        setAuthors(response.data);
+        const response = await axios.get("http://localhost:8080/book/authors", {
+          headers: {
+            Authorization: `Bearer ${token}`, // ensure token is sent
+          },
+        });
+
+        // response.data should be an array of author names
+        if (Array.isArray(response.data)) {
+          setAuthors(response.data);
+        } else {
+          console.error("Unexpected authors response:", response.data);
+          toast.error("Failed to fetch authors properly");
+        }
         setLoading(false);
       } catch (err) {
         console.error("Error fetching authors:", err);
+        toast.error("Error fetching authors");
         setLoading(false);
       }
     };
@@ -66,7 +73,7 @@ const Authors = () => {
             </table>
           </div>
         ) : (
-          <div className="text-center text-gray-500 italic">
+          <div className="text-center text-gray-500 italic mt-4">
             No authors found.
           </div>
         )}
@@ -75,4 +82,4 @@ const Authors = () => {
   );
 };
 
-export default Authors;
+export default ListedAuthors;

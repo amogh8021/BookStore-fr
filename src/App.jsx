@@ -29,6 +29,10 @@ import ForgotPassword from './Components/ForgotPassword';
 import ListedAuthor from './Pages/ListedAuthor';
 import ProfilePage from './Pages/ProfilePage';
 import AboutPage from './Pages/AboutPage';
+import OrderPlacedPage from './Pages/OrderPlacedPage';
+import Offers from './Components/Offers';
+import AdminOffers from './Pages/AdminOffers';
+import MyOrders from './Pages/MyOrders';
 
 
 function App() {
@@ -70,12 +74,15 @@ function App() {
         <Route path="/admin/orders/cancelled" element= {<CancelledOrders/>}/>
         <Route path="/admin/orders/completed" element= {<CompletedOrders/>}/>
         <Route path="/admin/books" element= {<ListedBooks/>}/>
-        <Route path="/admin/categories" element= {<Categories/>}/>
+        <Route path="/admin/genres" element= {<Categories/>}/>
         <Route path="/admin/users" element= {<UsersList/>}/>
         <Route path="/forgot-password" element= {<ForgotPassword/>}/>
         <Route path="/admin/authors" element= {<ListedAuthor/>}/>
         <Route path="/profile" element= {<ProfilePage/>}/>
         <Route path="/about" element= {<AboutPage/>}/>
+        <Route path="/admin/offers" element= {<AdminOffers/>}/>
+        <Route path="/my-orders" element= {<MyOrders/>}/>
+       <Route path="/order/:orderId" element={<OrderPlacedPage />} />
 
       
        </Routes>
